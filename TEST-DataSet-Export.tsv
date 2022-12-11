@@ -1,0 +1,73 @@
+Object	Name	ObjectType	Parent	Description	FormatString	DataType	Expression	IsHidden	DisplayFolder
+Model.Channel	Channel	Table	Model					False	
+Model.Sales	Sales	Table	Model	Contains the statistics overview of all sales in the period from 01.01.2011 to 31.12.2013.\n\nThe OrderDate indicates the receipt of an order. The DateKey indicates the day on which an order was processed and turned into a revenue. Therefore the DateKey is the decisive date for revenue calculations.\n\nDatasource: NAV Table [SalesExampleTable]				False	
+Model.Stores	Stores	Table	Model					False	
+Model.Promotion	Promotion	Table	Model					False	
+Model.ProductSubcategory	ProductSubcategory	Table	Model					False	
+Model.ProductCategory	ProductCategory	Table	Model					False	
+Model.Product	Product	Table	Model					False	
+Model.Geography	Geography	Table	Model					False	
+Model.Date	Date	Table	Model					False	
+Model.Sales.SUM Sales	SUM Sales	Measure	Model.Sales	"Sum of the amounts that have been invoiced (in CHF). When filtering by date, the DateKey is used, which indicates the day on which an order was processed and turned into a revenue.\r\n\r\nFilters:\r\n- Date (day)\r\n- Channel\r\n- Promotion\r\n- Product\r\n- Stores"	CHF\ #,0;"CHF"-#,0;"CHF"\ #,0	Decimal	SUM ( Sales[SalesAmount] )	False	_Measures
+Model.Sales.SUM Sales LY	SUM Sales LY	Measure	Model.Sales	Sum of the amounts that have been invoiced (in CHF). Refers to the selected time period and represents the value for the same time period in the previous year. When filtering by date, the DateKey is used, which indicates the day on which an order was processed and turned into a revenue.\n\nFilters:\n- Date (day)\n- Channel\n- Promotion\n- Product\n- Stores\n	"CHF"\ #,0;"CHF"-#,0;"CHF"\ #,0	Decimal	CALCULATE(\n    Sales[SUM Sales],\n    SAMEPERIODLASTYEAR( 'Date'[DateKey] )\n)	False	_Measures
+Model.Sales.NUM of Stores	NUM of Stores	Measure	Model.Sales	Number of stores that generated sales in the period under consideration. When filtering by date, the DateKey is used, which indicates the day on which an order was processed and turned into a revenue.\n\nFilters:\n- Date (day)\n- Channel\n- Promotion\n- Product\n- Stores\n	0	Int64	DISTINCTCOUNT( Sales[StoreKey] )	False	_Measures
+Model.Sales.AVG Sales per Store	AVG Sales per Store	Measure	Model.Sales	Average sales amount (in CHF) per store, which generated sales in the period under consideration. When filtering by date, the DateKey is used, which indicates the day on which an order was processed and turned into a revenue.\n\nFilters:\n- Date (day)\n- Channel\n- Promotion\n- Product\n- Stores	"CHF"\ #,0;"CHF"-#,0;"CHF"\ #,0	Decimal	DIVIDE(\n    [SUM Sales],\n    [NUM of Stores]\n)	False	_Measures
+Model.Sales.% Sales from Onlineshop	% Sales from Onlineshop	Measure	Model.Sales	Share of sales of invoiced orders, which originated from the sales channel “Onlineshop” in %. When filtering by date, the DateKey is used, which indicates the day on which an order was processed and turned into a revenue.\n\nFilters:\n- Date (day)\n- Channel\n- Promotion\n- Product\n- Stores	0.00%;-0.00%;0.00%	Double	DIVIDE(\n    [SUM Sales Onlineshop],\n    [SUM Sales]\n)	False	_Measures
+Model.Sales.SUM Sales Onlineshop	SUM Sales Onlineshop	Measure	Model.Sales	Sum of the amounts that have been invoiced (in CHF) and originated from the sales channel "Onlineshop". When filtering by date, the DateKey is used, which indicates the day on which an order was processed and turned into a revenue.\n\nFilters:\n- Date (day)\n- Channel\n- Promotion\n- Product\n- Stores	"CHF"\ #,0;"CHF"-#,0;"CHF"\ #,0	Decimal	CALCULATE(\n        SUM(Sales[SalesAmount]),\n        Sales[channelKey] = 2\n    )	False	_Measures
+Model.Channel.Channel	Channel	Column	Model.Channel		0	Int64		False	
+Model.Channel.ChannelName	ChannelName	Column	Model.Channel			String		False	
+Model.Sales.SalesKey	SalesKey	Column	Model.Sales	Primary Key of the sales table. One invoiced order consists of one or multiple rows (SalesKeys) in the sales table.	0	Int64		False	
+Model.Sales.DateKey	DateKey	Column	Model.Sales		General Date	DateTime		False	
+Model.Sales.channelKey	channelKey	Column	Model.Sales	Secondary Key, which links the salesto table to the DIM channel table. Specifies from which sales channel the invoiced order originated from.	0	Int64		False	
+Model.Sales.StoreKey	StoreKey	Column	Model.Sales		0	Int64		False	
+Model.Sales.ProductKey	ProductKey	Column	Model.Sales		0	Int64		False	
+Model.Sales.PromotionKey	PromotionKey	Column	Model.Sales		0	Int64		False	
+Model.Sales.UnitCost	UnitCost	Column	Model.Sales	Defines the cost in CHF of one unit of the corresponding product.	\$#,0.###############;(\$#,0.###############);\$#,0.###############	Decimal		False	
+Model.Sales.UnitPrice	UnitPrice	Column	Model.Sales	Defines the sales price in CHF of one unit of the corresponding product.	\$#,0.###############;(\$#,0.###############);\$#,0.###############	Decimal		False	
+Model.Sales.SalesQuantity	SalesQuantity	Column	Model.Sales		0	Int64		False	
+Model.Sales.ReturnQuantity	ReturnQuantity	Column	Model.Sales		0	Int64		False	
+Model.Sales.ReturnAmount	ReturnAmount	Column	Model.Sales		\$#,0.###############;(\$#,0.###############);\$#,0.###############	Decimal		False	
+Model.Sales.DiscountQuantity	DiscountQuantity	Column	Model.Sales		0	Int64		False	
+Model.Sales.DiscountAmount	DiscountAmount	Column	Model.Sales		\$#,0.###############;(\$#,0.###############);\$#,0.###############	Decimal		False	
+Model.Sales.TotalCost	TotalCost	Column	Model.Sales		\$#,0.###############;(\$#,0.###############);\$#,0.###############	Decimal		False	
+Model.Sales.SalesAmount	SalesAmount	Column	Model.Sales	Defines the amount of revenue in CHF resulting from a specific invoiced order. It is calculated by multiplying the ordered amount by the sales price of the corresponding product.	\$#,0.###############;(\$#,0.###############);\$#,0.###############	Decimal		False	
+Model.Stores.StoreKey	StoreKey	Column	Model.Stores			Double		False	
+Model.Stores.GeographyKey	GeographyKey	Column	Model.Stores			Double		False	
+Model.Stores.StoreType	StoreType	Column	Model.Stores			String		False	
+Model.Stores.StoreName	StoreName	Column	Model.Stores			String		False	
+Model.Stores.Status	Status	Column	Model.Stores			String		False	
+Model.Stores.CloseReason	CloseReason	Column	Model.Stores			String		False	
+Model.Stores.EmployeeCount	EmployeeCount	Column	Model.Stores			Double		False	
+Model.Stores.SellingAreaSize	SellingAreaSize	Column	Model.Stores			Double		False	
+Model.Promotion.PromotionKey	PromotionKey	Column	Model.Promotion		0	Int64		True	
+Model.Promotion.PromotionLabel	PromotionLabel	Column	Model.Promotion			String		False	
+Model.Promotion.PromotionName	PromotionName	Column	Model.Promotion			String		False	
+Model.Promotion.DiscountPercent	DiscountPercent	Column	Model.Promotion			Double		False	
+Model.Promotion.StartDate	StartDate	Column	Model.Promotion		General Date	DateTime		False	
+Model.Promotion.EndDate	EndDate	Column	Model.Promotion		General Date	DateTime		False	
+Model.ProductSubcategory.ProductSubcategoryKey	ProductSubcategoryKey	Column	Model.ProductSubcategory		0	Int64		False	
+Model.ProductSubcategory.ProductSubcategory	ProductSubcategory	Column	Model.ProductSubcategory			String		False	
+Model.ProductSubcategory.ProductCategoryKey	ProductCategoryKey	Column	Model.ProductSubcategory		0	Int64		False	
+Model.ProductCategory.ProductCategoryKey	ProductCategoryKey	Column	Model.ProductCategory		0	Int64		False	
+Model.ProductCategory.ProductCategory	ProductCategory	Column	Model.ProductCategory			String		False	
+Model.Product.ProductName	ProductName	Column	Model.Product			String		False	
+Model.Product.ProductDescription	ProductDescription	Column	Model.Product			String		False	
+Model.Product.Manufacturer	Manufacturer	Column	Model.Product			String		False	
+Model.Product.BrandName	BrandName	Column	Model.Product			String		False	
+Model.Product.ClassName	ClassName	Column	Model.Product			String		False	
+Model.Product.UnitCost	UnitCost	Column	Model.Product		\$#,0.###############;(\$#,0.###############);\$#,0.###############	Decimal		False	
+Model.Product.UnitPrice	UnitPrice	Column	Model.Product		\$#,0.###############;(\$#,0.###############);\$#,0.###############	Decimal		False	
+Model.Product.ProductKey	ProductKey	Column	Model.Product		0	Int64		False	
+Model.Product.ProductSubcategoryKey	ProductSubcategoryKey	Column	Model.Product		0	Int64		False	
+Model.Geography.GeographyKey	GeographyKey	Column	Model.Geography			Double		False	
+Model.Geography.GeographyType	GeographyType	Column	Model.Geography			String		False	
+Model.Geography.ContinentName	ContinentName	Column	Model.Geography			String		False	
+Model.Geography.RegionCountryName	RegionCountryName	Column	Model.Geography			String		False	
+Model.Date.DateKey	DateKey	Column	Model.Date		General Date	DateTime		False	
+Model.Date.DateInt	DateInt	Column	Model.Date			Double		False	
+Model.Date.MonthName	MonthName	Column	Model.Date			String		False	
+Model.Date.DayOfWeekName	DayOfWeekName	Column	Model.Date			String		False	
+Model.Date.Year	Year	Column	Model.Date		0	Int64		False	
+Model.Date.QuarterOfYear	QuarterOfYear	Column	Model.Date		0	Int64		False	
+Model.Date.MonthOfYear	MonthOfYear	Column	Model.Date		0	Int64		False	
+Model.Date.DayOfMonth	DayOfMonth	Column	Model.Date		0	Int64		False	

@@ -1,0 +1,12 @@
+Object	Name	Description	SourceColumn	Expression	FormatString	DataType
+Model.Stores.StoreType	StoreType		StoreType			String
+Model.Stores.StoreName	StoreName		StoreName			String
+Model.Stores.StoreKey	StoreKey		StoreKey			Double
+Model.Stores.Status	Status		Status			String
+Model.Stores.SellingAreaSize	SellingAreaSize		SellingAreaSize			Double
+Model.Stores.GeographyKey	GeographyKey		GeographyKey			Double
+Model.Stores.EmployeeCount	EmployeeCount		EmployeeCount			Double
+Model.Stores.CloseReason	CloseReason		CloseReason			String
+Model.Stores	Stores					
+Model.Sales.channelKey	channelKey	Secondary Key, which links the salesto table to the DIM channel table. Specifies from which sales channel the invoiced order originated from.	channelKey		0	Int64
+Model.Sales.UnitPrice	UnitPrice	Defines the sales price in CHF of one unit of the corresponding product.	UnitPrice		\$#,0.###############;(\$#,0.###############);\$#,0.###############	Decimal

@@ -1,0 +1,133 @@
+Object	Name	Description	SourceColumn	Expression	FormatString	DataType
+Model.Stores.StoreType	StoreType		StoreType			String
+Model.Stores.StoreName	StoreName		StoreName			String
+Model.Stores.StoreKey	StoreKey		StoreKey			Double
+Model.Stores.Status	Status		Status			String
+Model.Stores.SellingAreaSize	SellingAreaSize		SellingAreaSize			Double
+Model.Stores.GeographyKey	GeographyKey		GeographyKey			Double
+Model.Stores.EmployeeCount	EmployeeCount		EmployeeCount			Double
+Model.Stores.CloseReason	CloseReason		CloseReason			String
+Model.Stores	Stores					
+Model.Sales.channelKey	channelKey	"Secondary Key, which links the sales table to the DIM channel table. Specifies from which sales channel the invoiced order originated from."	channelKey		0	Int64
+Model.Sales.UnitPrice	UnitPrice	Defines the sales price in CHF of one unit of the corresponding product.	UnitPrice		"\$#,0.###############;(\$#,0.###############);\$#,0.###############"	Decimal
+Model.Sales.UnitCost	UnitCost	Defines the cost in CHF of one unit of the corresponding product.	UnitCost		"\$#,0.###############;(\$#,0.###############);\$#,0.###############"	Decimal
+Model.Sales.TotalCost	TotalCost		TotalCost		"\$#,0.###############;(\$#,0.###############);\$#,0.###############"	Decimal
+Model.Sales.StoreKey	StoreKey		StoreKey		0	Int64
+Model.Sales.SalesQuantity	SalesQuantity		SalesQuantity		0	Int64
+Model.Sales.SalesKey	SalesKey	Primary Key of the sales table. One invoiced order consists of one or multiple rows (SalesKeys) in the sales table.	SalesKey		0	Int64
+Model.Sales.SalesAmount	SalesAmount	Defines the amount of revenue in CHF resulting from a specific invoiced order. It is calculated by multiplying the ordered amount by the sales price of the corresponding product.	SalesAmount		"\$#,0.###############;(\$#,0.###############);\$#,0.###############"	Decimal
+Model.Sales.SUM Sales Onlineshop	SUM Sales Onlineshop	"Sum of the amounts that have been invoiced (in CHF) and originated from the sales channel ""Onlineshop"". When filtering by date, the DateKey is used, which indicates the day on which an order was processed and turned into a revenue.
+
+Filters:
+- Date (day)
+- Channelle
+- Promotion
+- Product
+- Stores"		"CALCULATE(
+        SUM(Sales[SalesAmount]),
+        Sales[channelKey] = 2
+    )"	"CHF\ #,0;""CHF""-#,0;""CHF""\ #,0"	Decimal
+Model.Sales.SUM Sales LY	SUM Sales LY	"Sum of the amounts that have been invoiced (in CHF). Refers to the selected time period and represents the value for the same time period in the previous year. When filtering by date, the DateKey is used, which indicates the day on which an order was processed and turned into a revenue.
+
+Filters:
+- Date (day)
+- Channelle
+- Promotion
+- Product
+- Stores
+"		"CALCULATE(
+    Sales[SUM Sales],
+    SAMEPERIODLASTYEAR( 'Date'[DateKey] )
+)"	"CHF\ #,0;""CHF""-#,0;""CHF""\ #,0"	Decimal
+Model.Sales.SUM Sales	SUM Sales	"Sum of the amounts that have been invoiced (in CHF). When filtering by date, the DateKey is used, which indicates the day on which an order was processed and turned into a revenue.
+
+Filters:
+- Date (day)
+- Channelle
+- Promotion
+- Product
+- Stores"		SUM ( Sales[SalesAmount] )	"CHF\ #,0;""CHF""-#,0;""CHF""\ #,0"	Decimal
+Model.Sales.ReturnQuantity	ReturnQuantity		ReturnQuantity		0	Int64
+Model.Sales.ReturnAmount	ReturnAmount		ReturnAmount		"\$#,0.###############;(\$#,0.###############);\$#,0.###############"	Decimal
+Model.Sales.PromotionKey	PromotionKey		PromotionKey		0	Int64
+Model.Sales.ProductKey	ProductKey		ProductKey		0	Int64
+Model.Sales.NUM of Stores	NUM of Stores	"Number of stores that generated sales in the period under consideration. When filtering by date, the DateKey is used, which indicates the day on which an order was processed and turned into a revenue.
+
+Filters:
+- Date (day)
+- Channelle
+- Promotion
+- Product
+- Stores
+"		DISTINCTCOUNT( Sales[StoreKey] )	0	Int64
+Model.Sales.DiscountQuantity	DiscountQuantity		DiscountQuantity		0	Int64
+Model.Sales.DiscountAmount	DiscountAmount		DiscountAmount		"\$#,0.###############;(\$#,0.###############);\$#,0.###############"	Decimal
+Model.Sales.DateKey	DateKey		DateKey		General Date	DateTime
+Model.Sales.AVG Sales per Store	AVG Sales per Store	"Average sales amount (in CHF) per store, which generated sales in the period under consideration. When filtering by date, the DateKey is used, which indicates the day on which an order was processed and turned into a revenue.
+
+Filters:
+- Date (day)
+- Channelle
+- Promotion
+- Product
+- Stores"		"DIVIDE(
+    [SUM Sales],
+    [NUM of Stores]
+)"	"CHF\ #,0;""CHF""-#,0;""CHF""\ #,0"	Decimal
+Model.Sales.% Sales from Onlineshop	% Sales from Onlineshop	"Share of sales of invoiced orders, which originated from the sales channel “Onlineshop” in %. When filtering by date, the DateKey is used, which indicates the day on which an order was processed and turned into a revenue.
+
+Filters:
+- Date (day)
+- Channelle
+- Promotion
+- Product
+- Stores"		"DIVIDE(
+    [SUM Sales Onlineshop],
+    [SUM Sales]
+)"	0.00%;-0.00%;0.00%	Double
+Model.Sales	Sales	"Contains the statistics overview of all sales in the period from 01.01.2011 to 31.12.2013.
+
+The OrderDate indicates the receipt of an order. The DateKey indicates the day on which an order was processed and turned into a revenue. Therefore the DateKey is the decisive date for revenue calculations.
+
+Datasource: NAV Table [SalesExampleTable]"				
+Model.Promotion.StartDate	StartDate		StartDate		General Date	DateTime
+Model.Promotion.PromotionName	PromotionName		PromotionName			String
+Model.Promotion.PromotionLabel	PromotionLabel		PromotionLabel			String
+Model.Promotion.PromotionKey	PromotionKey		PromotionKey		0	Int64
+Model.Promotion.EndDate	EndDate		EndDate		General Date	DateTime
+Model.Promotion.DiscountPercent	DiscountPercent		DiscountPercent			Double
+Model.Promotion	Promotion					
+Model.ProductSubcategory.ProductSubcategoryKey	ProductSubcategoryKey		ProductSubcategoryKey		0	Int64
+Model.ProductSubcategory.ProductSubcategory	ProductSubcategory		ProductSubcategory			String
+Model.ProductSubcategory.ProductCategoryKey	ProductCategoryKey		ProductCategoryKey		0	Int64
+Model.ProductSubcategory	ProductSubcategory					
+Model.ProductCategory.ProductCategoryKey	ProductCategoryKey		ProductCategoryKey		0	Int64
+Model.ProductCategory.ProductCategory	ProductCategory		ProductCategory			String
+Model.ProductCategory	ProductCategory					
+Model.Product.UnitPrice	UnitPrice		UnitPrice		"\$#,0.###############;(\$#,0.###############);\$#,0.###############"	Decimal
+Model.Product.UnitCost	UnitCost		UnitCost		"\$#,0.###############;(\$#,0.###############);\$#,0.###############"	Decimal
+Model.Product.ProductSubcategoryKey	ProductSubcategoryKey		ProductSubcategoryKey		0	Int64
+Model.Product.ProductName	ProductName		ProductName			String
+Model.Product.ProductKey	ProductKey		ProductKey		0	Int64
+Model.Product.ProductDescription	ProductDescription		ProductDescription			String
+Model.Product.Manufacturer	Manufacturer		Manufacturer			String
+Model.Product.ClassName	ClassName		ClassName			String
+Model.Product.BrandName	BrandName		BrandName			String
+Model.Product	Product					
+Model.Geography.RegionCountryName	RegionCountryName		RegionCountryName			String
+Model.Geography.GeographyType	GeographyType		GeographyType			String
+Model.Geography.GeographyKey	GeographyKey		GeographyKey			Double
+Model.Geography.ContinentName	ContinentName		ContinentName			String
+Model.Geography	Geography					
+Model.Date.Year	Year		Year		0	Int64
+Model.Date.QuarterOfYear	QuarterOfYear		QuarterOfYear		0	Int64
+Model.Date.MonthOfYear	MonthOfYear		MonthOfYear		0	Int64
+Model.Date.MonthName	MonthName		MonthName			String
+Model.Date.DayOfWeekName	DayOfWeekName		DayOfWeekName			String
+Model.Date.DayOfMonth	DayOfMonth		DayOfMonth		0	Int64
+Model.Date.DateKey	DateKey		DateKey		General Date	DateTime
+Model.Date.DateInt	DateInt		DateInt			Double
+Model.Date	Date					
+Model.Channel.ChannelName	ChannelName		ChannelName			String
+Model.Channel.Channel	Channel		Channel		0	Int64
+Model.Channel	Channel					
