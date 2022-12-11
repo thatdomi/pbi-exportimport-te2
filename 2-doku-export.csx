@@ -1,14 +1,6 @@
-// Export properties for the currently selected objects:
-var tsv = ExportProperties(Selected);
-SaveFile("test.tsv", tsv);
-
-// Imports and applies the properties in the specified file:
-var tsv = ReadFile("testcopy.tsv");
-ImportProperties(tsv);
-
-
-string filenameTSV = "TEST-DataSet-Export.tsv";
-// Construct a list of all columns and measures
+// set file name
+string filenameTSV = "2-doku-export.tsv";
+// Construct a list of all tables, columns and measures
 var objects = Model.Tables.Cast<ITabularNamedObject>().Concat(Model.AllMeasures).Concat(Model.AllColumns);
 
 // Construct a list of all hidden columns and measures:

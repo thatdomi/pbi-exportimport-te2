@@ -1,22 +1,13 @@
-
-// Construct a list of all columns and measures
-var objects = Model.Tables.Cast<ITabularNamedObject>().Concat(Model.AllMeasures).Concat(Model.AllColumns);
-// Get their properties in TSV format (tabulator-separated):
-var tsv = ExportProperties(objects,"Name,ObjectType,Parent,Description,FormatString,DataType,Expression,IsHidden,DisplayFolder");
-// Save TSV file
-SaveFile("TEST-DataSet-Export.tsv", tsv);
-
 #r "System.IO"
 #r "Microsoft.Office.Interop.Excel"
 
 using System.IO;
 using Excel = Microsoft.Office.Interop.Excel;
 
-string filePath = @"C:\\Users\\dominic\\Syntera\\GL ORG - Documents\\Sales\\Power BI Meetup\\"; // Update this to be the location of the Dokumentation Excel, add \\ to the end
+string filePath = @"C:\\Git\\pbi-exportimport-te2\\"; // Update this to be the location of the Dokumentation Excel, add \\ to the end
 string excelFileName = "3-Full-DataSet-Dokumentation.xlsx"; // Update this to the full excel file name of the Documentation
 string excelTabName = "technical Documentation"; // Update excel sheetname where 
 string excelFilePath = filePath + excelFileName;
-
 
 // Open Excel
 var excelApp = new Excel.Application();
@@ -31,14 +22,14 @@ var ws = wb.Worksheets[excelTabName] as Excel.Worksheet;
 Excel.Range xlRange = ws.UsedRange;
 
 int rowCount = xlRange.Rows.Count;
-
 for (int r = 2; r <= rowCount; r++)
 {   
+    // read in cells of row
     string tableName = (string)(ws.Cells[r,1] as Excel.Range).Text.ToString();
     string objType = (string)(ws.Cells[r,2] as Excel.Range).Text.ToString();
     string objName = (string)(ws.Cells[r,3] as Excel.Range).Text.ToString();
     string desc = (string)(ws.Cells[r,4] as Excel.Range).Text.ToString();
-    desc = desc.Replace(System.Environment.NewLine, "\r\n");
+    desc = desc.Replace(System.Environment.NewLine, "\r\n"); // ensures line breaks get inserted back
     string isHidden = (string)(ws.Cells[r,6] as Excel.Range).Text.ToString().ToLower();
     string formatString = (string)(ws.Cells[r,8] as Excel.Range).Text.ToString();
     string displayFolder = (string)(ws.Cells[r,9] as Excel.Range).Text.ToString();
@@ -52,6 +43,7 @@ for (int r = 2; r <= rowCount; r++)
     //formatString.Output();
     //displayFolder.Output();
     
+    // update tables
     if (objType == "Table")
     {
         try
@@ -63,6 +55,8 @@ for (int r = 2; r <= rowCount; r++)
         {
         }
     }
+
+    // update columns
     else if (objType == "Column")
     {
         try
@@ -76,6 +70,8 @@ for (int r = 2; r <= rowCount; r++)
         {            
         }
     }
+
+    // update measures
     else if (objType == "Measure")
     {
         try
@@ -89,36 +85,7 @@ for (int r = 2; r <= rowCount; r++)
         {
         }
     }
-    /*else if (objType == "Hierarchy")
-    {
-        try
-        {
-            Model.Tables[tableName].Hierarchies[objName].Description = desc;
-        }
-        catch
-        {
-        }
-    }
-    else if (objType == "Calculation Group")
-    {
-        try
-        {
-            Model.Tables[tableName].Description = desc;
-        }
-        catch
-        {
-        }
-    }
-    else if (objType == "Calculation Item")
-    {
-        try
-        {
-            (Model.Tables[tableName] as CalculationGroupTable).CalculationItems[objName].Description = desc;
-        }
-        catch
-        {
-        }
-    }*/
+
 }
 
 // Close workbook and quit Excel program

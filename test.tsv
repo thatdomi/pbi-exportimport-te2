@@ -1,3 +1,0 @@
-Object	Name	Description	SourceColumn	Expression	FormatString	DataType
-Model.Stores.StoreType	StoreType		StoreType			String
-Model.Stores.StoreName	StoreName		StoreName			String
