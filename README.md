@@ -8,4 +8,4 @@ Used to quickly search and replace descriptions
 Used to create a Dokumentation file, reimports of changes from excel can generate issues with formating, special characters usw.
 
 ## 3 doku export/import with xlsx refresh
-Used to export data model properties and directly refresh excel file. Changes in Excel are reimported via tabular model
+Used to export data model properties and directly refresh excel file. Changes in Excel are reimported via import script directly from xlsx
